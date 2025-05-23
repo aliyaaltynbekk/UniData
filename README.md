@@ -1,7 +1,7 @@
-cat > README.md << 'EOL'
 # UniData - Система управления данными учебного заведения
 
-![Java CI with Maven](https://github.com/aliyaaltynbekk/unidata/workflows/Java%20CI%20with%20Maven/badge.svg)
+![image](https://github.com/user-attachments/assets/401d3ce9-0f69-4b17-b27e-0a63fc1f4cab)
+
 
 Система управления данными учебного заведения на базе Spring Boot с поддержкой обмена сообщениями, управления пользователями и ролями.
 
