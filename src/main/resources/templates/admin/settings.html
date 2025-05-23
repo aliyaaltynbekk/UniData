@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Жүйе параметрлері</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script th:src="@{/js/admin.js}" defer></script>
+    <style>
+        .settings-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .settings-header {
+            border-bottom: 1px solid #ecf0f1;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .settings-title {
+            margin: 0;
+            font-size: 20px;
+            color: #2c3e50;
+        }
+
+        .settings-description {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .form-row {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-check-input {
+            margin-right: 10px;
+        }
+
+        .form-help {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .btn-settings {
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .setting-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ecf0f1;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #7f8c8d;
+            position: relative;
+        }
+
+        .tab.active {
+            color: #3498db;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: #3498db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="admin-dashboard">
+<div th:replace="fragments/sidebar :: adminSidebar"></div>
+
+<div class="admin-content">
+    <div class="admin-header">
+        <h1 class="admin-title" th:text="${pageTitle}">Жүйе параметрлері</h1>
+        <div class="admin-actions">
+            <button id="save-all-settings" class="btn btn-success">Барлық өзгерістерді сақтау</button>
+        </div>
+    </div>
+
+    <div id="admin-alert-container"></div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="general">Жалпы</div>
+        <div class="tab" data-tab="security">Қауіпсіздік</div>
+        <div class="tab" data-tab="email">Электрондық пошта</div>
+        <div class="tab" data-tab="appearance">Сыртқы түрі</div>
+        <div class="tab" data-tab="backup">Резервтік көшірме</div>
+    </div>
+
+    <div id="general" class="tab-content active">
+        <div class="settings-card">
+            <div class="settings-header">
+                <h2 class="settings-title">Жүйе туралы ақпарат</h2>
+                <p class="settings-description">Жүйе туралы негізгі ақпарат</p>
+            </div>
+
+            <form id="system-info-form">
+                <div class="form-row">
+                    <label for="site-name" class="form-label">Сайт атауы</label>
+                    <input type="text" id="site-name" name="siteName" class="form-control" value="UniData">
+                </div>
+
+                <div class="form-row">
+                    <label for="site-description" class="form-label">Сайт сипаттамасы</label>
+                    <textarea id="site-description" name="siteDescription" class="form-control" rows="3">Білім беру процесін басқару жүйесі</textarea>
+                </div>
+
+                <div class="form-row">
+                    <label for="admin-email" class="form-label">Әкімші поштасы</label>
+                    <input type="email" id="admin-email" name="adminEmail" class="form-control" value="admin@unidata.kz">
+                </div>
+
+                <div class="form-row">
+                    <label for="timezone" class="form-label">Уақыт белдеуі</label>
+                    <select id="timezone" name="timezone" class="form-control">
+                        <option value="Asia/Almaty" selected>Asia/Almaty (GMT+6)</option>
+                        <option value="Asia/Aqtau">Asia/Aqtau (GMT+5)</option>
+                        <option value="Asia/Aqtobe">Asia/Aqtobe (GMT+5)</option>
+                        <option value="Asia/Atyrau">Asia/Atyrau (GMT+5)</option>
+                        <option value="Asia/Oral">Asia/Oral (GMT+5)</option>
+                        <option value="Asia/Qostanay">Asia/Qostanay (GMT+6)</option>
+                    </select>
+                </div>
+
+                <div class="setting-actions">
+                    <button type="submit" class="btn btn-primary btn-settings">Сақтау</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="settings-card">
+            <div class="settings-header">
+                <h2 class="settings-title">Тілдік параметрлер</h2>
+                <p class="settings-description">Жүйе тілдерін басқару</p>
+            </div>
+
+            <form id="language-settings-form">
+                <div class="form-row">
+                    <label for="default-language" class="form-label">Негізгі тіл</label>
+                    <select id="default-language" name="defaultLanguage" class="form-control">
+                        <option value="kk" selected>Қазақша</option>
+                        <option value="ru">Русский</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Қосымша тілдер</label>
+                    <div class="form-check">
+                        <input type="checkbox" id="lang-kk" name="languages[]" value="kk" class="form-check-input" checked disabled>
+                        <label for="lang-kk">Қазақша (негізгі)</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="lang-ru" name="languages[]" value="ru" class="form-check-input" checked>
+                        <label for="lang-ru">Русский</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="lang-en" name="languages[]" value="en" class="form-check-input" checked>
+                        <label for="lang-en">English</label>
+                    </div>
+                </div>
+
+                <div class="setting-actions">
+                    <button type="submit" class="btn btn-primary btn-settings">Сақтау</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="security" class="tab-content">
+        <div class="settings-card">
+            <div class="settings-header">
+                <h2 class="settings-title">Тіркелу параметрлері</h2>
+                <p class="settings-description">Пайдаланушы тіркелу процесін басқару</p>
+            </div>
+
+            <form id="registration-settings-form">
+                <div class="form-row">
+                    <div class="form-check">
+                        <input type="checkbox" id="allow-registration" name="allowRegistration" class="form-check-input" checked>
+                        <label for="allow-registration">Ашық тіркелуге рұқсат ету</label>
+                    </div>
+                    <p class="form-help">Бұл опцияны өшірсеңіз, жаңа пайдаланушыларды тек әкімшілер тіркей алады</p>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-check">
+                        <input type="checkbox" id="email-verification" name="emailVerification" class="form-check-input" checked>
+                        <label for="email-verification">Электрондық пошта растауын талап ету</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-check">
+                        <input type="checkbox" id="admin-approval" name="adminApproval" class="form-check-input">
+                        <label for="admin-approval">Әкімші мақұлдауын талап ету</label>
+                    </div>
+                </div>
+
+                <div class="setting-actions">
+                    <button type="submit" class="btn btn-primary btn-settings">Сақтау</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="settings-card">
+            <div class="settings-header">
+                <h2 class="settings-title">Құпия сөз саясаты</h2>
+                <p class="settings-description">Пайдаланушылардың құпия сөздеріне қойылатын талаптар</p>
+            </div>
+
+            <form id="password-policy-form">
+                <div class="form-row">
+                    <label for="min-password-length" class="form-label">Ең аз ұзындығы</label>
+                    <input type="number" id="min-password-length" name="minPasswordLength" class="form-control" value="8" min="6" max="20">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-check">
+                        <input type="checkbox" id="require-uppercase" name="requireUppercase" class="form-check-input" checked>
+                        <label for="require-uppercase">Бас әріптер міндетті (A-Z)</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-check">
+                        <input type="checkbox" id="require-lowercase" name="requireLowercase" class="form-check-input" checked>
+                        <label for="require-lowercase">Кіші әріптер міндетті (a-z)</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-check">
+                        <input type="checkbox" id="require-numbers" name="requireNumbers" class="form-check-input" checked>
+                        <label for="require-numbers">Сандар міндетті (0-9)</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-check">
+                        <input type="checkbox" id="require-symbols" name="requireSymbols" class="form-check-input">
+                        <label for="require-symbols">Арнайы таңбалар міндетті (!@#$%^&*)</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label for="password-expiry" class="form-label">Құпия сөз мерзімі (күндер)</label>
+                    <input type="number" id="password-expiry" name="passwordExpiry" class="form-control" value="90" min="0">
+                    <p class="form-help">0 мәні мерзімнің шектеусіз екенін білдіреді</p>
+                </div>
+
+                <div class="setting-actions">
+                    <button type="submit" class="btn btn-primary btn-settings">Сақтау</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="email" class="tab-content">
+        <div class="settings-card">
+            <div class="settings-header">
+                <h2 class="settings-title">SMTP параметрлері</h2>
+                <p class="settings-description">Электрондық пошта жіберуге арналған параметрлер</p>
+            </div>
+
+            <form id="smtp-settings-form">
+                <div class="form-row">
+                    <label for="smtp-host" class="form-label">SMTP хост</label>
+                    <input type="text" id="smtp-host" name="smtpHost" class="form-control" value="smtp.example.com">
+                </div>
+
+                <div class="form-row">
+                    <label for="smtp-port" class="form-label">SMTP порт</label>
+                    <input type="number" id="smtp-port" name="smtpPort" class="form-control" value="587">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-check">
+                        <input type="checkbox" id="smtp-ssl" name="smtpSsl" class="form-check-input" checked>
+                        <label for="smtp-ssl">SSL/TLS қолдану</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label for="smtp-username" class="form-label">Пайдаланушы аты</label>
+                    <input type="text" id="smtp-username" name="smtpUsername" class="form-control" value="noreply@unidata.kz">
+                </div>
+
+                <div class="form-row">
+                    <label for="smtp-password" class="form-label">Құпия сөз</label>
+                    <input type="password" id="smtp-password" name="smtpPassword" class="form-control" value="********">
+                </div>
+
+                <div class="form-row">
+                    <label for="from-email" class="form-label">Жіберуші пошта</label>
+                    <input type="email" id="from-email" name="fromEmail" class="form-control" value="noreply@unidata.kz">
+                </div>
+
+                <div class="form-row">
+                    <label for="from-name" class="form-label">Жіберуші аты</label>
+                    <input type="text" id="from-name" name="fromName" class="form-control" value="UniData">
+                </div>
+
+                <div class="setting-actions">
+                    <button type="button" class="btn btn-outline-primary btn-settings" id="test-email">Тексеру</button>
+                    <button type="submit" class="btn btn-primary btn-settings">Сақтау</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="appearance" class="tab-content">
+        <div class="settings-card">
+            <div class="settings-header">
+                <h2 class="settings-title">Интерфейс параметрлері</h2>
+                <p class="settings-description">Жүйе интерфейсінің параметрлері</p>
+            </div>
+
+            <form id="appearance-settings-form">
+                <div class="form-row">
+                    <label for="primary-color" class="form-label">Негізгі түс</label>
+                    <input type="color" id="primary-color" name="primaryColor" class="form-control" value="#3498db">
+                </div>
+
+                <div class="form-row">
+                    <label for="secondary-color" class="form-label">Қосымша түс</label>
+                    <input type="color" id="secondary-color" name="secondaryColor" class="form-control" value="#2ecc71">
+                </div>
+
+                <div class="form-row">
+                    <label for="logo-upload" class="form-label">Логотип</label>
+                    <input type="file" id="logo-upload" name="logo" class="form-control">
+                </div>
+
+                <div class="form-row">
+                    <label for="favicon-upload" class="form-label">Favicon</label>
+                    <input type="file" id="favicon-upload" name="favicon" class="form-control">
+                </div>
+
+                <div class="setting-actions">
+                    <button type="submit" class="btn btn-primary btn-settings">Сақтау</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="backup" class="tab-content">
+        <div class="settings-card">
+            <div class="settings-header">
+                <h2 class="settings-title">Резервтік көшірме</h2>
+                <p class="settings-description">Жүйе деректерінің резервтік көшірмесін жасау және қалпына келтіру</p>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Резервтік көшірме жасау</label>
+                <p>Жүйенің барлық деректерін сақтау үшін резервтік көшірме жасаңыз</p>
+                <button type="button" class="btn btn-primary btn-settings" id="create-backup">Резервтік көшірме жасау</button>
+            </div>
+
+            <div class="form-row" style="margin-top: 30px;">
+                <label class="form-label">Резервтік көшірмені қалпына келтіру</label>
+                <p>Бұрын жасалған резервтік көшірмеден деректерді қалпына келтіру</p>
+                <input type="file" id="restore-file" name="restoreFile" class="form-control" style="margin-bottom: 10px;">
+                <button type="button" class="btn btn-warning btn-settings" id="restore-backup">Қалпына келтіру</button>
+            </div>
+
+            <div class="form-row" style="margin-top: 30px;">
+                <label class="form-label">Автоматты резервтік көшірме</label>
+                <div class="form-check">
+                    <input type="checkbox" id="auto-backup" name="autoBackup" class="form-check-input" checked>
+                    <label for="auto-backup">Автоматты резервтік көшірмелерді қосу</label>
+                </div>
+                <div style="margin-top: 10px;">
+                    <label for="backup-frequency" class="form-label">Жиілігі</label>
+                    <select id="backup-frequency" name="backupFrequency" class="form-control">
+                        <option value="daily">Күн сайын</option>
+                        <option value="weekly" selected>Апта сайын</option>
+                        <option value="monthly">Ай сайын</option>
+                    </select>
+                </div>
+                <div style="margin-top: 10px;">
+                    <label for="backup-retention" class="form-label">Сақтау мерзімі (күндер)</label>
+                    <input type="number" id="backup-retention" name="backupRetention" class="form-control" value="30" min="1">
+                </div>
+                <button type="button" class="btn btn-primary btn-settings" style="margin-top: 15px;" id="save-backup-settings">Параметрлерді сақтау</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                showAlert('Параметрлер сәтті сақталды', 'success');
+            });
+        });
+
+        const testEmailBtn = document.getElementById('test-email');
+        if (testEmailBtn) {
+            testEmailBtn.addEventListener('click', function() {
+                showAlert('Тестілік хабарлама жіберілді', 'info');
+            });
+        }
+
+        const createBackupBtn = document.getElementById('create-backup');
+        if (createBackupBtn) {
+            createBackupBtn.addEventListener('click', function() {
+                showAlert('Резервтік көшірме жасалуда...', 'info');
+                setTimeout(() => {
+                    showAlert('Резервтік көшірме сәтті жасалды', 'success');
+                }, 2000);
+            });
+        }
+
+        const saveAllBtn = document.getElementById('save-all-settings');
+        if (saveAllBtn) {
+            saveAllBtn.addEventListener('click', function() {
+                showAlert('Барлық параметрлер сақталуда...', 'info');
+                setTimeout(() => {
+                    showAlert('Барлық параметрлер сәтті сақталды', 'success');
+                }, 1500);
+            });
+        }
+    });
+
+    function showAlert(message, type) {
+        const alertContainer = document.getElementById('admin-alert-container');
+
+        if (!alertContainer) return;
+
+        alertContainer.innerHTML = '';
+
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type}`;
+        alert.innerHTML = message;
+
+        const closeButton = document.createElement('button');
+        closeButton.className = 'close';
+        closeButton.innerHTML = '&times;';
+        closeButton.style.float = 'right';
+        closeButton.style.background = 'none';
+        closeButton.style.border = 'none';
+        closeButton.style.fontSize = '20px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.style.padding = '0 5px';
+
+        closeButton.addEventListener('click', function() {
+            alert.remove();
+        });
+
+        alert.insertBefore(closeButton, alert.firstChild);
+        alertContainer.appendChild(alert);
+
+        setTimeout(() => {
+            alert.remove();
+        }, 5000);
+    }
+</script>
+</body>
+</html>

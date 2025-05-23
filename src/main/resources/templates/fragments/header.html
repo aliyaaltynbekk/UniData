@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>UniData Header</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #667eea;
+            text-decoration: none;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .logo:hover::after {
+            width: 100%;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 12px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: left 0.3s ease;
+            z-index: -1;
+            border-radius: 25px;
+        }
+
+        .nav-link:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-link:hover::before {
+            left: 0;
+        }
+
+        .nav-link[href="/auth/login"] {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-link[href="/auth/login"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-link[href="/auth/register"] {
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .nav-link[href="/auth/register"]:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-link[href="/auth/logout"] {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .nav-link[href="/auth/logout"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .nav-link[href="/admin/dashboard"] {
+            background: linear-gradient(45deg, #feca57, #ff9ff3);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(254, 202, 87, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(254, 202, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(254, 202, 87, 0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                padding: 20px;
+                gap: 20px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .nav-link {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                grid-template-columns: repeat(2, 1fr);
+                display: grid;
+                width: 100%;
+                gap: 10px;
+            }
+
+            .nav-link {
+                text-align: center;
+                padding: 12px 8px;
+                font-size: 12px;
+            }
+        }
+
+        .navbar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .demo-content {
+            padding: 60px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .demo-content h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .demo-content p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">UniData</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Басты бет</a>
+
+                <a href="/user/profile" class="nav-link">Профиль</a>
+                <a href="/user/messages" class="nav-link">Хабарламалар</a>
+
+                <a href="/auth/logout" class="nav-link">Шығу</a>
+            </div>
+        </div>
+    </nav>
+</header>

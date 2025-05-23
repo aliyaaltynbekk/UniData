@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Жауап беру</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        .reply-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .reply-header {
+            padding: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .reply-title {
+            font-size: 24px;
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+        }
+
+        .original-message {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .original-header {
+            margin-bottom: 10px;
+            color: #7f8c8d;
+        }
+
+        .original-content {
+            white-space: pre-wrap;
+            max-height: 150px;
+            overflow-y: auto;
+            color: #2c3e50;
+        }
+
+        .reply-form {
+            padding: 20px;
+        }
+
+        .reply-actions {
+            padding: 0 20px 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .encryption-notice {
+            background-color: #e8f7f0;
+            border-left: 4px solid #2ecc71;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .encryption-icon {
+            font-size: 18px;
+            margin-right: 10px;
+            margin-top: 2px;
+            color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="reply-container">
+    <div class="reply-header">
+        <h1 class="reply-title">Хабарламаға жауап беру</h1>
+
+        <div class="original-message">
+            <div class="original-header">
+                <strong>Жіберуші:</strong> <span th:text="${originalMessage.sender.fullName}">Аружан Маратқызы</span><br>
+                <strong>Тақырып:</strong> <span th:text="${originalMessage.subject}">Курс туралы сұрақ</span><br>
+                <strong>Күні:</strong> <span th:text="${#temporals.format(originalMessage.sentTime, 'dd.MM.yyyy HH:mm')}">15.10.2023 14:30</span>
+            </div>
+            <div class="original-content" th:text="${originalMessage.content}">
+                Сәлеметсіз бе!
+
+                Мен сіздің курс туралы бірнеше сұрақтарым бар еді.
+
+                1. Курс қашан басталады?
+                2. Оқу материалдары онлайн қол жетімді ме?
+                3. Емтихан қашан болады?
+
+                Жауабыңыз үшін алдын ала рахмет!
+            </div>
+        </div>
+
+        <div class="encryption-notice">
+            <span class="encryption-icon"></span>
+            <div>
+                <strong>Шифрленген хабарламалар</strong>
+                <div>Сіздің жауабыңыз автоматты түрде шифрленеді және тек жіберуші мен алушыға қол жетімді болады</div>
+            </div>
+        </div>
+    </div>
+
+    <form th:action="@{/messages/{id}/reply(id=${originalMessage.id})}" method="post" class="reply-form">
+        <div class="form-group">
+            <label for="subject" class="form-label">Тақырып</label>
+            <input type="text" id="subject" name="subject" class="form-control"
+                   th:value="${'Re: ' + originalMessage.subject}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="content" class="form-label">Жауап мәтіні</label>
+            <textarea id="content" name="content" class="form-control" rows="10" required></textarea>
+        </div>
+
+        <div class="reply-actions">
+            <button type="submit" class="btn btn-primary">Жіберу</button>
+            <a th:href="@{/messages/{id}(id=${originalMessage.id})}" class="btn btn-outline-primary">Бас тарту</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

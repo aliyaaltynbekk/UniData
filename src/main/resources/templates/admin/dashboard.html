@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${pageTitle}">Басқару тақтасы</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <script th:src="@{/js/admin.js}" defer></script>
+  <style>
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin: 10px 0;
+    }
+
+    .stat-label {
+      color: #7f8c8d;
+      font-size: 16px;
+    }
+
+    .users-icon { color: #3498db; }
+    .active-users-icon { color: #2ecc71; }
+    .students-icon { color: #f39c12; }
+    .teachers-icon { color: #9b59b6; }
+
+    .activity-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+
+    .activity-card-header {
+      border-bottom: 1px solid #ecf0f1;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .activity-card-title {
+      margin: 0;
+      font-size: 20px;
+      color: #2c3e50;
+    }
+
+    .activity-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .activity-item {
+      padding: 15px;
+      border-bottom: 1px solid #ecf0f1;
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-user {
+      font-weight: 500;
+      color: #3498db;
+    }
+
+    .activity-time {
+      font-size: 14px;
+      color: #95a5a6;
+      margin-top: 5px;
+    }
+
+    .admin-content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 992px) {
+      .admin-content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="admin-dashboard">
+<div th:replace="fragments/sidebar :: adminSidebar"></div>
+
+<div class="admin-content">
+  <div class="admin-header">
+    <h1 class="admin-title" th:text="${pageTitle}">Басқару тақтасы</h1>
+    <div class="admin-actions">
+      <span class="current-date"></span>
+    </div>
+  </div>
+
+  <div id="admin-alert-container"></div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon users-icon">👥</div>
+      <div class="stat-value" data-value="3" th:text="${totalUsers}">0</div>
+      <div class="stat-label">Барлық пайдаланушылар</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon active-users-icon">👤</div>
+      <div class="stat-value" data-value="2" th:text="${activeUsers}">0</div>
+      <div class="stat-label">Белсенді пайдаланушылар</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon students-icon">🎓</div>
+      <div class="stat-value" data-value="1" th:text="${totalStudents}">0</div>
+      <div class="stat-label">Студенттер</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon teachers-icon">👨‍🏫</div>
+      <div class="stat-value" data-value="2" th:text="${totalTeachers}">0</div>
+      <div class="stat-label">Оқытушылар</div>
+    </div>
+  </div>
+
+  <div class="admin-content-grid">
+    <div class="activity-card">
+      <div class="activity-card-header">
+        <h2 class="activity-card-title">Соңғы белсенділік</h2>
+        <a href="/admin/logs" class="btn btn-sm btn-outline-primary">Барлығын көру</a>
+      </div>
+
+      <ul class="activity-list">
+        <li class="activity-item">
+          <div><span class="activity-user">Азамат Ерлан</span> жүйеге кірді</div>
+          <div class="activity-time">2 сағат бұрын</div>
+        </li>
+        <li class="activity-item">
+          <div><span class="activity-user">Аружан Маратқызы</span> профилін жаңартты</div>
+          <div class="activity-time">3 сағат бұрын</div>
+        </li>
+        <li class="activity-item">
+          <div><span class="activity-user">Бауыржан Сәрсенов</span> құжат жүктеді</div>
+          <div class="activity-time">5 сағат бұрын</div>
+        </li>
+        <li class="activity-item">
+          <div><span class="activity-user">Әсел Тұрарқызы</span> тіркелді</div>
+          <div class="activity-time">1 күн бұрын</div>
+        </li>
+        <li class="activity-item">
+          <div><span class="activity-user">Дәулет Нұрланов</span> хабарлама жіберді</div>
+          <div class="activity-time">1 күн бұрын</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="activity-card">
+      <div class="activity-card-header">
+        <h2 class="activity-card-title">Жүйе мәртебесі</h2>
+      </div>
+
+      <div style="padding: 15px;">
+        <div style="margin-bottom: 15px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+            <span>Сервер жүктемесі</span>
+            <span>25%</span>
+          </div>
+          <div style="background-color: #ecf0f1; height: 10px; border-radius: 5px;">
+            <div style="background-color: #2ecc71; width: 25%; height: 100%; border-radius: 5px;"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+            <span>Жады қолданысы</span>
+            <span>45%</span>
+          </div>
+          <div style="background-color: #ecf0f1; height: 10px; border-radius: 5px;">
+            <div style="background-color: #f39c12; width: 45%; height: 100%; border-radius: 5px;"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+            <span>Дерекқор мәртебесі</span>
+            <span>Онлайн</span>
+          </div>
+          <div style="color: #2ecc71; font-weight: 500;">✓ Қалыпты жұмыс істеуде</div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <h3 style="font-size: 16px; margin-bottom: 10px;">Жүйе ақпараты</h3>
+          <div style="font-size: 14px; margin-bottom: 5px;">
+            <span style="color: #7f8c8d;">Нұсқасы:</span> 0.0.1
+          </div>
+          <div style="font-size: 14px; margin-bottom: 5px;">
+            <span style="color: #7f8c8d;">Соңғы жаңарту:</span> 23.05.2025
+          </div>
+          <div style="font-size: 14px; margin-bottom: 5px;">
+            <span style="color: #7f8c8d;">Орта:</span> Өндірістік
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Рөлдер</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script th:src="@{/js/admin.js}" defer></script>
+    <style>
+        .role-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .role-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .role-title {
+            margin: 0;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .role-title-admin {
+            color: #2c3e50;
+        }
+
+        .role-title-teacher {
+            color: #3498db;
+        }
+
+        .role-title-student {
+            color: #2ecc71;
+        }
+
+        .role-icon {
+            font-size: 24px;
+        }
+
+        .permission-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .permission-item {
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .permission-item:last-child {
+            border-bottom: none;
+        }
+
+        .permission-check {
+            color: #2ecc71;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .permission-cancel {
+            color: #e74c3c;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .permission-description {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+    </style>
+</head>
+<body class="admin-dashboard">
+<div th:replace="fragments/sidebar :: adminSidebar"></div>
+
+<div class="admin-content">
+    <div class="admin-header">
+        <h1 class="admin-title" th:text="${pageTitle}">Рөлдер</h1>
+    </div>
+
+    <div id="admin-alert-container"></div>
+
+    <div class="roles-grid">
+        <div class="role-card">
+            <div class="role-header">
+                <h2 class="role-title role-title-admin">
+                    <span class="role-icon">👑</span> Әкімші
+                </h2>
+                <div>
+                    <a href="/admin/roles/edit/ADMIN" class="btn btn-sm btn-outline-primary">Өзгерту</a>
+                </div>
+            </div>
+
+            <ul class="permission-list">
+                <li class="permission-item">
+                    <span class="permission-check">✓</span>
+                    <div>
+                        <div>Жүйені басқару</div>
+                        <div class="permission-description">Жүйенің барлық аспектілерін басқару мүмкіндігі</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-check">✓</span>
+                    <div>
+                        <div>Пайдаланушыларды басқару</div>
+                        <div class="permission-description">Пайдаланушыларды қосу, өзгерту және жою</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-check">✓</span>
+                    <div>
+                        <div>Рөлдерді басқару</div>
+                        <div class="permission-description">Рөлдер мен рұқсаттарды өзгерту</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-check">✓</span>
+                    <div>
+                        <div>Журналдарды көру</div>
+                        <div class="permission-description">Жүйе журналдарына қол жеткізу</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-check">✓</span>
+                    <div>
+                        <div>Параметрлерді өзгерту</div>
+                        <div class="permission-description">Жүйе параметрлерін конфигурациялау</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="role-card">
+            <div class="role-header">
+                <h2 class="role-title role-title-teacher">
+                    <span class="role-icon">👨‍🏫</span> Оқытушы
+                </h2>
+                <div>
+                    <a href="/admin/roles/edit/TEACHER" class="btn btn-sm btn-outline-primary">Өзгерту</a>
+                </div>
+            </div>
+
+            <ul class="permission-list">
+                <li class="permission-item">
+                    <span class="permission-check">✓</span>
+                    <div>
+                        <div>Курстарды басқару</div>
+                        <div class="permission-description">Курстарды құру және өзгерту</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-check">✓</span>
+                    <div>
+                        <div>Бағалау</div>
+                        <div class="permission-description">Студенттерді бағалау</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-check">✓</span>
+                    <div>
+                        <div>Материалдарды жүктеу</div>
+                        <div class="permission-description">Оқу материалдарын жүктеу</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-cancel">✕</span>
+                    <div>
+                        <div>Жүйені басқару</div>
+                        <div class="permission-description">Жүйенің барлық аспектілерін басқару мүмкіндігі</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-cancel">✕</span>
+                    <div>
+                        <div>Пайдаланушыларды басқару</div>
+                        <div class="permission-description">Пайдаланушыларды қосу, өзгерту және жою</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Студент рөлі -->
+        <div class="role-card">
+            <div class="role-header">
+                <h2 class="role-title role-title-student">
+                    <span class="role-icon">🎓</span> Студент
+                </h2>
+                <div>
+                    <a href="/admin/roles/edit/STUDENT" class="btn btn-sm btn-outline-primary">Өзгерту</a>
+                </div>
+            </div>
+
+            <ul class="permission-list">
+                <li class="permission-item">
+                    <span class="permission-check">✓</span>
+                    <div>
+                        <div>Курстарға жазылу</div>
+                        <div class="permission-description">Курстарға жазылу және қатысу</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-check">✓</span>
+                    <div>
+                        <div>Материалдарды көру</div>
+                        <div class="permission-description">Оқу материалдарына қол жеткізу</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-check">✓</span>
+                    <div>
+                        <div>Тапсырмаларды орындау</div>
+                        <div class="permission-description">Тапсырмаларды орындау және жауаптар жіберу</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-cancel">✕</span>
+                    <div>
+                        <div>Курстарды басқару</div>
+                        <div class="permission-description">Курстарды құру және өзгерту</div>
+                    </div>
+                </li>
+                <li class="permission-item">
+                    <span class="permission-cancel">✕</span>
+                    <div>
+                        <div>Бағалау</div>
+                        <div class="permission-description">Басқа студенттерді бағалау</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

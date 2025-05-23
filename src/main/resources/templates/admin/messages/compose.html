@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Жаңа хабарлама</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        .compose-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .compose-header {
+            padding: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .compose-title {
+            font-size: 24px;
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .compose-form {
+            padding: 20px;
+        }
+
+        .compose-actions {
+            padding: 0 20px 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .encryption-notice {
+            background-color: #e8f7f0;
+            border-left: 4px solid #2ecc71;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .encryption-icon {
+            font-size: 18px;
+            margin-right: 10px;
+            margin-top: 2px;
+            color: #2ecc71;
+        }
+
+        .attachment-button {
+            margin-top: 15px;
+        }
+
+        .attachment-list {
+            margin-top: 10px;
+        }
+
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+        .attachment-name {
+            flex: 1;
+            margin-left: 10px;
+        }
+
+        .attachment-remove {
+            color: #e74c3c;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="compose-container">
+    <div class="compose-header">
+        <h1 class="compose-title">Жаңа хабарлама жазу</h1>
+    </div>
+
+    <div class="encryption-notice">
+        <span class="encryption-icon"></span>
+        <div>
+            <strong>Шифрленген хабарламалар</strong>
+            <div>Сіздің хабарламаңыз автоматты түрде шифрленеді және тек жіберуші мен алушыға қол жетімді болады</div>
+        </div>
+    </div>
+
+    <form th:action="@{/messages/send}" method="post" class="compose-form">
+        <div class="form-group">
+            <label for="receiverId" class="form-label">Алушы</label>
+            <select id="receiverId" name="receiverId" class="form-control" required>
+                <option value="">Алушыны таңдаңыз</option>
+                <option th:each="user : ${users}"
+                        th:value="${user.id}"
+                        th:text="${user.fullName + ' (' + user.email + ')'}">
+                    Бауыржан Сәрсенов (baurjan@mail.kz)
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="messageType" class="form-label">Хабарлама түрі</label>
+            <select id="messageType" name="messageType" class="form-control">
+                <option value="PERSONAL">Жеке</option>
+                <option value="GROUP">Топтық</option>
+                <option value="ANNOUNCEMENT">Хабарландыру</option>
+                <option value="SYSTEM">Жүйелік</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="subject" class="form-label">Тақырып</label>
+            <input type="text" id="subject" name="subject" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="content" class="form-label">Хабарлама мәтіні</label>
+            <textarea id="content" name="content" class="form-control" rows="10" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Тіркемелер</label>
+            <div class="attachment-button">
+                <label for="attachment" class="btn btn-outline-primary">
+                    <i class="fa fa-paperclip"></i> Файл тіркеу
+                </label>
+                <input type="file" id="attachment" style="display: none;" multiple>
+            </div>
+
+            <div class="attachment-list" id="attachment-list"></div>
+        </div>
+
+        <div class="compose-actions">
+            <button type="submit" class="btn btn-primary">Жіберу</button>
+            <a th:href="@{/messages}" class="btn btn-outline-primary">Бас тарту</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const attachmentInput = document.getElementById('attachment');
+        const attachmentList = document.getElementById('attachment-list');
+
+        attachmentInput.addEventListener('change', function() {
+            const files = this.files;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const item = document.createElement('div');
+                item.className = 'attachment-item';
+
+                item.innerHTML = `
+                    <span></span>
+                    <span class="attachment-name">${file.name}</span>
+                    <span class="attachment-remove" data-name="${file.name}">✕</span>
+                `;
+
+                attachmentList.appendChild(item);
+            }
+
+            const removeButtons = document.querySelectorAll('.attachment-remove');
+            removeButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.parentNode.remove();
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>

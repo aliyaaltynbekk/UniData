@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 – Рұқсат жоқ</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        .error-container {
+            max-width: 800px;
+            margin: 100px auto;
+            text-align: center;
+        }
+
+        .error-code {
+            font-size: 120px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 0;
+            line-height: 1;
+        }
+
+        .error-title {
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            font-size: 18px;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        .error-image {
+            max-width: 300px;
+            margin-bottom: 30px;
+        }
+
+        .home-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: transparent;
+            border: 2px solid #3498db;
+            color: #3498db;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .home-button:hover {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="error-container">
+    <h1 class="error-code">403</h1>
+    <h2 class="error-title">Қатынауға рұқсат жоқ</h2>
+    <p class="error-message">Бұл бетке кіруге сіздің рөліңіз сәйкес келмейді немесе құқықтарыңыз жеткіліксіз.</p>
+    <img class="error-image" src="/img/403-error.svg" alt="Рұқсат жоқ" onerror="this.style.display='none'">
+    <div>
+        <a th:href="@{/home}" class="home-button">Басты бетке оралу</a>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

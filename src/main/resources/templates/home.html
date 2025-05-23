@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Басты бет - UniData</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-section {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .welcome-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .welcome-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-right: 20px;
+            object-fit: cover;
+            border: 3px solid #3498db;
+        }
+
+        .welcome-title {
+            margin: 0;
+            font-size: 24px;
+            color: #2c3e50;
+        }
+
+        .welcome-subtitle {
+            margin: 5px 0 0;
+            color: #7f8c8d;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-right: 20px;
+            color: #3498db;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 0 5px;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            margin: 0;
+        }
+
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-section {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 20px;
+            color: #2c3e50;
+        }
+
+        .section-action {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .schedule-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .schedule-item {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .schedule-item:last-child {
+            border-bottom: none;
+        }
+
+        .schedule-time {
+            flex: 0 0 100px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .schedule-content {
+            flex: 1;
+        }
+
+        .schedule-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .schedule-details {
+            color: #95a5a6;
+            font-size: 14px;
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .task-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .task-due {
+            color: #e74c3c;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .task-course {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .announcement-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .announcement-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .announcement-item:last-child {
+            border-bottom: none;
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .announcement-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .announcement-date {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .announcement-content {
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            background-color: #e9ecef;
+            transform: translateY(-3px);
+        }
+
+        .action-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        .action-label {
+            color: #2c3e50;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .notification-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .notification-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-content {
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .notification-time {
+            color: #95a5a6;
+            font-size: 12px;
+        }
+
+        .unread-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #3498db;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-row {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="dashboard-container">
+    <div class="welcome-section">
+        <div class="welcome-header">
+            <img th:if="${user != null and user.avatarUrl != null}" th:src="${user.avatarUrl}" class="welcome-avatar" alt="Пайдаланушы аватары">
+            <img th:unless="${user != null and user.avatarUrl != null}"
+                 src="/img/default-avatar.png"
+                 class="welcome-avatar"
+                 alt="Пайдаланушы аватары"
+                 onerror="this.src='https://static.vecteezy.com/system/resources/previews/000/420/940/original/avatar-icon-vector-illustration.jpg'">
+            <div>
+                <h1 class="welcome-title" th:if="${user != null}" th:text="'Сәлем, ' + ${user.fullName} + '!'"></h1>
+                <h1 class="welcome-title" th:unless="${user != null}">Сәлеметсіз бе!</h1>
+                <p class="welcome-subtitle">UniData жүйесіне қош келдіңіз. Бүгін сіздің күніңіз.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-stats">
+        <div class="stat-card">
+            <div class="stat-icon">📚</div>
+            <div class="stat-content">
+                <h2 class="stat-value">5</h2>
+                <p class="stat-label">Белсенді курстар</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div class="stat-content">
+                <h2 class="stat-value">8</h2>
+                <p class="stat-label">Аяқталмаған тапсырмалар</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-content">
+                <h2 class="stat-value">3</h2>
+                <p class="stat-label">Бүгінгі сабақтар</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">💬</div>
+            <div class="stat-content">
+                <h2 class="stat-value">12</h2>
+                <p class="stat-label">Жаңа хабарламалар</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-row">
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">Бүгінгі кесте</h2>
+                <a href="#" class="section-action">Толық кестені көру</a>
+            </div>
+
+            <ul class="schedule-list">
+                <li class="schedule-item">
+                    <div class="schedule-time">09:00 - 10:30</div>
+                    <div class="schedule-content">
+                        <div class="schedule-title">Деректер қоры теориясы</div>
+                        <div class="schedule-details">204 аудитория, Мұхтар Айтхожаұлы</div>
+                    </div>
+                </li>
+
+                <li class="schedule-item">
+                    <div class="schedule-time">10:45 - 12:15</div>
+                    <div class="schedule-content">
+                        <div class="schedule-title">Алгоритмдер және деректер құрылымдары</div>
+                        <div class="schedule-details">301 аудитория, Бауыржан Ермекұлы</div>
+                    </div>
+                </li>
+
+                <li class="schedule-item">
+                    <div class="schedule-time">13:00 - 14:30</div>
+                    <div class="schedule-content">
+                        <div class="schedule-title">Веб бағдарламалау</div>
+                        <div class="schedule-details">104 компьютерлік зал, Аружан Маратқызы</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">Жылдам әрекеттер</h2>
+            </div>
+
+            <div class="quick-actions">
+                <a href="/user/profile" class="action-button">
+                    <span class="action-icon">👤</span>
+                    <span class="action-label">Профильді қарау</span>
+                </a>
+
+                <a href="/user/messages" class="action-button">
+                    <span class="action-icon">✉️</span>
+                    <span class="action-label">Хабарламалар</span>
+                </a>
+            </div>
+
+            <div class="section-header" style="margin-top: 25px;">
+                <h2 class="section-title">Хабарландырулар</h2>
+            </div>
+
+            <ul class="notification-list">
+                <li class="notification-item">
+                    <div class="notification-content">
+                        <span class="unread-indicator"></span>
+                        Жаңа хабарлама алдыңыз
+                    </div>
+                    <div class="notification-time">10 минут бұрын</div>
+                </li>
+
+                <li class="notification-item">
+                    <div class="notification-content">
+                        <span class="unread-indicator"></span>
+                        "Веб бағдарламалау" курсына жаңа материал қосылды
+                    </div>
+                    <div class="notification-time">1 сағат бұрын</div>
+                </li>
+
+                <li class="notification-item">
+                    <div class="notification-content">
+                        Келесі аптадағы кесте жаңартылды
+                    </div>
+                    <div class="notification-time">Кеше</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="dashboard-row">
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">Жақын арадағы тапсырмалар</h2>
+                <a href="#" class="section-action">Барлық тапсырмаларды көру</a>
+            </div>
+
+            <ul class="task-list">
+                <li class="task-item">
+                    <div class="task-header">
+                        <div class="task-title">Лабораториялық жұмыс №3</div>
+                        <div class="task-due">Мерзімі: 3 күн қалды</div>
+                    </div>
+                    <div class="task-course">Деректер қоры теориясы</div>
+                </li>
+
+                <li class="task-item">
+                    <div class="task-header">
+                        <div class="task-title">Аралық бақылау</div>
+                        <div class="task-due">Мерзімі: 5 күн қалды</div>
+                    </div>
+                    <div class="task-course">Алгоритмдер және деректер құрылымдары</div>
+                </li>
+
+                <li class="task-item">
+                    <div class="task-header">
+                        <div class="task-title">Жоба №1</div>
+                        <div class="task-due">Мерзімі: 1 апта қалды</div>
+                    </div>
+                    <div class="task-course">Веб бағдарламалау</div>
+                </li>
+
+                <li class="task-item">
+                    <div class="task-header">
+                        <div class="task-title">Презентация</div>
+                        <div class="task-due">Мерзімі: 2 апта қалды</div>
+                    </div>
+                    <div class="task-course">Ағылшын тілі</div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">Соңғы жаңалықтар</h2>
+            </div>
+
+            <ul class="announcement-list">
+                <li class="announcement-item">
+                    <div class="announcement-header">
+                        <div class="announcement-title">Кітапхана жұмыс уақыты</div>
+                        <div class="announcement-date">15.05.2025</div>
+                    </div>
+                    <div class="announcement-content">
+                        Емтихан кезеңінде университет кітапханасы ұзартылған кесте бойынша жұмыс істейтінін хабарлаймыз.
+                    </div>
+                </li>
+
+                <li class="announcement-item">
+                    <div class="announcement-header">
+                        <div class="announcement-title">Ғылыми конференция</div>
+                        <div class="announcement-date">12.05.2025</div>
+                    </div>
+                    <div class="announcement-content">
+                        25 қазанда "Заманауи IT технологиялар" атты студенттік ғылыми конференция өтеді. Қатысуға өтініштер 20 қазанға дейін қабылданады.
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
